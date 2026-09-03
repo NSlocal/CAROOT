@@ -1,0 +1,13 @@
+# ==========================================
+# CA CERTIFICATE — NSlocal/CAROOT
+# ==========================================
+Repo: https://github.com/NSlocal/CAROOT
+File: cert/1_ca_cert.pem
+Type: Root CA Certificate
+Format: PEM (Base64)
+Subject: CN=AdGuard DNS Root CA, O=AdGuard, C=US
+Issuer: CN=AdGuard DNS Root CA, O=AdGuard, C=US
+Valid: 2025-03-05 — 2035-03-04
+SHA256: --:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--:--
+Serial: 0x436cfe55df0ae6e279cf95f9cf57e7cf
+Android Hash: openssl x509 -in 1_ca_cert.pem -hash -noout → [HASH].0
