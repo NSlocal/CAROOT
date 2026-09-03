@@ -23,10 +23,10 @@ jobs:
           sudo apt-get install -y openssl zip
           mkdir -p out
 
-      - name: ✅ Set Izin Execute
+      - name: ✅ Set Izin Execute Semua Script
         run: |
-          chmod +x scripts/*.sh utils/*.sh
-          echo "✅ Izin diatur"
+          chmod +x scripts/*.sh utils/*.sh 2>/dev/null || true
+          echo "✅ Izin execute diatur"
 
       - name: 📋 Debug — Tampilkan Semua File
         run: |
@@ -37,20 +37,18 @@ jobs:
       - name: 🔐 Verify Certificate
         run: |
           if [ -f "utils/7_verify_cert.sh" ]; then
-            echo "✅ Menjalankan verify cert..."
-            bash utils/7_verify_cert.sh  # ⬅️ PAKAI bash langsung, tidak ./
+            bash utils/7_verify_cert.sh
             echo "✅ Verify selesai — Lanjut Build ZIP"
           else
             echo "⚠️ utils/7_verify_cert.sh TIDAK ADA — lewati verify"
           fi
-        shell: bash  # ⬅️ Pastikan pakai bash
 
       - name: 📦 Build Release ZIP
         run: |
           make zip
           ls -la out/
 
-      - name: 📤 Create GitHub Release
+      - name: 📤 Create GitHub Release — LANGSUNG PUBLISH!
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -60,11 +58,11 @@ jobs:
             **Repo:** https://github.com/NSlocal/CAROOT
             
             ## 📦 Isi Paket
-            - ✅ CA Certificate (PEM)
+            - ✅ CA Certificate (PEM Format)
             - ✅ Installer Root + Non-Root
             - ✅ Pilih Mode Otomatis
-            - ✅ Bot Download ZIP
-            - ✅ Verify Script
+            - ✅ Bot Download ZIP Release
+            - ✅ Verify Certificate Script
             
             ## 📥 Cara Pakai
             ```bash
@@ -75,7 +73,7 @@ jobs:
             ```
             ⚠️ **Ganti cert/1_ca_cert.pem dengan cert PEM ASLI sebelum install!**
           files: out/*.zip
-          draft: false
-          prerelease: false
+          draft: false              # ✅ WAJIB false = LANGSUNG PUBLISH!
+          prerelease: false         # ✅ BUKAN pre-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
