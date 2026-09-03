@@ -1,7 +1,7 @@
 name: 🤖 Bot Download CAROOT Release
 on:
   release:
-    types: [published]   # ✅ HANYA JALAN SETELAH RELEASE BENAR-BENAR PUBLISH!
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -9,39 +9,37 @@ jobs:
     name: Bot Download & Verify
     runs-on: ubuntu-latest
     steps:
+      - name: ⏳ Tunggu Release Siap
+        run: sleep 15
+
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: 🤖 Download ZIP Release TERBARU
+      - name: 🤖 Download ZIP Terbaru
         uses: robinraju/release-downloader@v1
         with:
           repository: NSlocal/CAROOT
-          latest: true              # ✅ AMBIL VERSI TERBARU OTOMATIS
-          filename: 'CAROOT-*.zip'  # ✅ Filter nama ZIP
+          latest: true
+          filename: 'CAROOT-*.zip'
           out-file-path: 'downloads/'
           extract: false
-        continue-on-error: false
+        continue-on-error: true
 
-      - name: 📋 Info File Downloaded
+      - name: 📋 Cek Hasil
         run: |
-          echo "=== 📂 HASIL DOWNLOAD ==="
-          ls -la downloads/
-          echo ""
+          ls -la downloads/ || true
           if compgen -G "downloads/CAROOT-*.zip" > /dev/null; then
-            echo "✅ ✅ ✅ ZIP BERHASIL DI-DOWNLOAD!"
+            echo "✅ ZIP BERHASIL DI-DOWNLOAD!"
           else
-            echo "❌ ZIP BELUM ADA — Pastikan Release sudah dipublish di:"
-            echo "👉 https://github.com/NSlocal/CAROOT/releases"
+            echo "⚠️ ZIP BELUM ADA — Cek di: https://github.com/NSlocal/CAROOT/releases"
+            echo "👉 Pastikan Release SUDAH DIPUBLISH (bukan Draft!)"
             exit 1
           fi
 
-      - name: ✅ Verifikasi Integritas ZIP
+      - name: ✅ Verifikasi ZIP
         run: |
           cd downloads/
-          echo "=== 🔐 VERIFIKASI ZIP ==="
           for f in CAROOT-*.zip; do
-            if [ -f "$f" ]; then
-              echo "📦 Cek File: $f"
-              unzip -t "$f" 2>/dev/null && echo "✅ ZIP VALID — Tidak Rusak" || echo "❌ ZIP RUSAK / CORRUPT"
-            fi
+            echo "📦 Cek: $f"
+            unzip -t "$f" 2>/dev/null && echo "✅ ZIP VALID" || echo "❌ ZIP RUSAK"
           done
