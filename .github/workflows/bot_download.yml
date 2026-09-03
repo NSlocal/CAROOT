@@ -1,7 +1,7 @@
 name: 🤖 Bot Download CAROOT Release
 on:
   release:
-    types: [published]
+    types: [published]   # ✅ JALAN OTOMATIS SETELAH RELEASE PUBLISH!
   workflow_dispatch:
 
 jobs:
@@ -12,24 +12,35 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: 🤖 Download ZIP Release
+      - name: 🤖 Download ZIP Release TERBARU
         uses: robinraju/release-downloader@v1
         with:
           repository: NSlocal/CAROOT
-          latest: true
-          filename: 'CAROOT-*.zip'
+          latest: true              # ✅ AMBIL VERSI TERBARU OTOMATIS
+          filename: 'CAROOT-*.zip'  # ✅ Filter nama ZIP
           out-file-path: 'downloads/'
           extract: false
+        continue-on-error: false
 
-      - name: 📋 Info File
+      - name: 📋 Info File Downloaded
         run: |
+          echo "=== 📂 HASIL DOWNLOAD ==="
           ls -la downloads/
-          echo "✅ ZIP berhasil di-download!"
+          echo ""
+          if compgen -G "downloads/CAROOT-*.zip" > /dev/null; then
+            echo "✅ ✅ ✅ ZIP BERHASIL DI-DOWNLOAD!"
+          else
+            echo "❌ ZIP BELUM ADA — Publish Release dulu!"
+            exit 1
+          fi
 
-      - name: ✅ Verifikasi ZIP
+      - name: ✅ Verifikasi Integritas ZIP
         run: |
           cd downloads/
-          for f in *.zip; do
-            echo "📦 Cek: $f"
-            unzip -t "$f" 2>/dev/null && echo "✅ ZIP VALID" || echo "❌ ZIP RUSAK"
+          echo "=== 🔐 VERIFIKASI ZIP ==="
+          for f in CAROOT-*.zip; do
+            if [ -f "$f" ]; then
+              echo "📦 Cek File: $f"
+              unzip -t "$f" 2>/dev/null && echo "✅ ZIP VALID — Tidak Rusak" || echo "❌ ZIP RUSAK / CORRUPT"
+            fi
           done
