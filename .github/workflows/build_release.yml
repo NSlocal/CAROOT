@@ -38,9 +38,10 @@ jobs:
         run: |
           if [ -f "utils/7_verify_cert.sh" ]; then
             ./utils/7_verify_cert.sh
-            echo "✅ Script verify selesai"
+            echo "✅ Verify selesai — lanjut build"
           else
-            echo "❌ utils/7_verify_cert.sh TIDAK DITEMUKAN"
+            echo "❌ utils/7_verify_cert.sh TIDAK ADA"
+            ls -la utils/
             exit 1
           fi
 
@@ -72,6 +73,7 @@ jobs:
             chmod +x scripts/*.sh utils/*.sh
             ./scripts/4_install_cert.sh
             ```
+            ⚠️ **Ganti cert/1_ca_cert.pem dengan cert PEM ASLI Anda sebelum install!**
           files: out/*.zip
           draft: false
           prerelease: false
