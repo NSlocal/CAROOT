@@ -5,11 +5,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
-# ✅ PERMISSION PENUH — WAJIB!
 permissions:
   contents: write
   packages: write
-  pull-requests: write
 
 jobs:
   build:
@@ -25,58 +23,38 @@ jobs:
           sudo apt-get install -y openssl zip
           mkdir -p out
 
-      - name: ✅ Set Izin Execute Semua Script
+      - name: ✅ Set Izin Execute
         run: |
           chmod +x scripts/*.sh utils/*.sh 2>/dev/null || true
-          echo "✅ Izin execute diatur"
 
-      - name: 📋 Debug — Tampilkan Semua File
-        run: |
-          echo "=== 📂 STRUKTUR FILE ==="
-          ls -laR
-          echo "========================"
+      - name: 📋 Debug File
+        run: ls -laR
 
-      - name: 🔐 Verify Certificate
+      - name: 🔐 Verify Cert
         run: |
           if [ -f "utils/7_verify_cert.sh" ]; then
             bash utils/7_verify_cert.sh
-            echo "✅ Verify selesai — Lanjut Build ZIP"
-          else
-            echo "⚠️ utils/7_verify_cert.sh TIDAK ADA — lewati verify"
           fi
 
-      - name: 📦 Build Release ZIP
+      - name: 📦 Build ZIP
         run: |
           make zip
           ls -la out/
 
-      - name: 📤 Create GitHub Release — PUBLISH LANGSUNG!
-        uses: softprops/action-gh-release@v1
+      - name: 📤 Create Release — PASTI PUBLISH!
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: CAROOT ${{ github.ref_name }}
           body: |
-            # ✅ CAROOT — ${{ github.ref_name }}
+            # ✅ CAROOT ${{ github.ref_name }}
             **Repo:** https://github.com/NSlocal/CAROOT
-            
-            ## 📦 Isi Paket
-            - ✅ CA Certificate (PEM Format)
+            - ✅ CA Cert PEM
             - ✅ Installer Root + Non-Root
-            - ✅ Pilih Mode Otomatis
-            - ✅ Bot Download ZIP Release
-            - ✅ Verify Certificate Script
-            
-            ## 📥 Cara Pakai
-            ```bash
-            ./scripts/3_download_release_zip.sh
-            unzip CAROOT-*.zip
-            chmod +x scripts/*.sh utils/*.sh
-            ./scripts/4_install_cert.sh
-            ```
-            ⚠️ **Ganti cert/1_ca_cert.pem dengan cert PEM ASLI sebelum install!**
+            - ✅ Bot Download ZIP
+            ⚠️ Ganti cert/1_ca_cert.pem dengan cert ASLI sebelum install!
           files: out/*.zip
-          draft: false              # ✅ WAJIB false = LANGSUNG PUBLISH!
-          prerelease: false         # ✅ BUKAN pre-release
-          generate_release_notes: true
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
