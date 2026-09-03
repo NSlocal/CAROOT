@@ -23,14 +23,30 @@ jobs:
           sudo apt-get install -y openssl zip
           mkdir -p out
 
+      - name: ✅ Set Izin Execute Semua Script
+        run: |
+          chmod +x scripts/*.sh utils/*.sh 2>/dev/null || true
+          echo "✅ Izin execute diatur"
+
+      - name: 📋 Debug — Tampilkan Semua File
+        run: |
+          echo "=== 📂 STRUKTUR FILE REPO ==="
+          ls -laR
+          echo "============================"
+
       - name: 🔐 Verify Certificate
         run: |
-          chmod +x scripts/*.sh utils/*.sh
-          ./utils/7_verify_cert.sh
+          if [ -f "utils/7_verify_cert.sh" ]; then
+            echo "✅ Menjalankan verifikasi cert..."
+            ./utils/7_verify_cert.sh
+          else
+            echo "❌ FILE TIDAK DITEMUKAN: utils/7_verify_cert.sh"
+            echo "Pastikan folder utils/ dan file 7_verify_cert.sh sudah di-push!"
+            exit 1
+          fi
 
       - name: 📦 Build Release ZIP
         run: |
-          chmod +x scripts/*.sh utils/*.sh
           make zip
           ls -la out/
 
@@ -52,7 +68,7 @@ jobs:
             
             ## 📥 Cara Pakai
             ```bash
-            # Download otomatis dari repo NSlocal/CAROOT
+            # Download otomatis
             ./scripts/3_download_release_zip.sh
             unzip CAROOT-*.zip
             chmod +x scripts/*.sh utils/*.sh
@@ -63,4 +79,3 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
