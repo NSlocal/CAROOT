@@ -16,12 +16,12 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: NSlocal/CAROOT
-          tag: ${{ github.event.release.tag_name }}
+          latest: true          # ✅ AMBIL VERSI TERBARU OTOMATIS!
           filename: 'CAROOT-*.zip'
           out-file-path: 'downloads/'
           extract: false
 
-      - name: 📋 Info File
+      - name: 📋 Info File Downloaded
         run: |
           ls -la downloads/
           echo "✅ Bot berhasil download ZIP dari NSlocal/CAROOT!"
@@ -33,4 +33,3 @@ jobs:
             echo "Verifikasi: $f"
             unzip -t "$f" 2>/dev/null && echo "✅ ZIP VALID — $f" || echo "❌ ZIP RUSAK — $f"
           done
-          
