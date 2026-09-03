@@ -1,0 +1,66 @@
+name: Build & Release CAROOT
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    name: Build & Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Install Tools
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y openssl zip
+          mkdir -p out
+
+      - name: 🔐 Verify Certificate
+        run: |
+          chmod +x scripts/*.sh utils/*.sh
+          ./utils/7_verify_cert.sh
+
+      - name: 📦 Build Release ZIP
+        run: |
+          chmod +x scripts/*.sh utils/*.sh
+          make zip
+          ls -la out/
+
+      - name: 📤 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: CAROOT ${{ github.ref_name }}
+          body: |
+            # ✅ CAROOT — ${{ github.ref_name }}
+            **Repo:** https://github.com/NSlocal/CAROOT
+            
+            ## 📦 Isi Paket
+            - ✅ CA Certificate (PEM Format)
+            - ✅ Installer Root + Non-Root
+            - ✅ Pilih Mode Otomatis
+            - ✅ Bot Download ZIP Release
+            - ✅ Verify Certificate Script
+            
+            ## 📥 Cara Pakai
+            ```bash
+            # Download otomatis dari repo NSlocal/CAROOT
+            ./scripts/3_download_release_zip.sh
+            unzip CAROOT-*.zip
+            chmod +x scripts/*.sh utils/*.sh
+            ./scripts/4_install_cert.sh
+            ```
+          files: out/*.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
