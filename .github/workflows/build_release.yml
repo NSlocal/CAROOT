@@ -30,18 +30,17 @@ jobs:
 
       - name: 📋 Debug — Tampilkan Semua File
         run: |
-          echo "=== 📂 STRUKTUR FILE REPO ==="
+          echo "=== 📂 STRUKTUR FILE ==="
           ls -laR
-          echo "============================"
+          echo "========================"
 
       - name: 🔐 Verify Certificate
         run: |
           if [ -f "utils/7_verify_cert.sh" ]; then
-            echo "✅ Menjalankan verifikasi cert..."
             ./utils/7_verify_cert.sh
+            echo "✅ Script verify selesai"
           else
-            echo "❌ FILE TIDAK DITEMUKAN: utils/7_verify_cert.sh"
-            echo "Pastikan folder utils/ dan file 7_verify_cert.sh sudah di-push!"
+            echo "❌ utils/7_verify_cert.sh TIDAK DITEMUKAN"
             exit 1
           fi
 
@@ -68,7 +67,6 @@ jobs:
             
             ## 📥 Cara Pakai
             ```bash
-            # Download otomatis
             ./scripts/3_download_release_zip.sh
             unzip CAROOT-*.zip
             chmod +x scripts/*.sh utils/*.sh
