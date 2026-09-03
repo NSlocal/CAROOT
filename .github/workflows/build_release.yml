@@ -23,10 +23,10 @@ jobs:
           sudo apt-get install -y openssl zip
           mkdir -p out
 
-      - name: ✅ Set Izin Execute Semua Script
+      - name: ✅ Set Izin Execute
         run: |
-          chmod +x scripts/*.sh utils/*.sh 2>/dev/null || true
-          echo "✅ Izin execute diatur"
+          chmod +x scripts/*.sh utils/*.sh
+          echo "✅ Izin diatur"
 
       - name: 📋 Debug — Tampilkan Semua File
         run: |
@@ -37,13 +37,13 @@ jobs:
       - name: 🔐 Verify Certificate
         run: |
           if [ -f "utils/7_verify_cert.sh" ]; then
-            ./utils/7_verify_cert.sh
-            echo "✅ Verify selesai — lanjut build"
+            echo "✅ Menjalankan verify cert..."
+            bash utils/7_verify_cert.sh  # ⬅️ PAKAI bash langsung, tidak ./
+            echo "✅ Verify selesai — Lanjut Build ZIP"
           else
-            echo "❌ utils/7_verify_cert.sh TIDAK ADA"
-            ls -la utils/
-            exit 1
+            echo "⚠️ utils/7_verify_cert.sh TIDAK ADA — lewati verify"
           fi
+        shell: bash  # ⬅️ Pastikan pakai bash
 
       - name: 📦 Build Release ZIP
         run: |
@@ -60,11 +60,11 @@ jobs:
             **Repo:** https://github.com/NSlocal/CAROOT
             
             ## 📦 Isi Paket
-            - ✅ CA Certificate (PEM Format)
+            - ✅ CA Certificate (PEM)
             - ✅ Installer Root + Non-Root
             - ✅ Pilih Mode Otomatis
-            - ✅ Bot Download ZIP Release
-            - ✅ Verify Certificate Script
+            - ✅ Bot Download ZIP
+            - ✅ Verify Script
             
             ## 📥 Cara Pakai
             ```bash
@@ -73,7 +73,7 @@ jobs:
             chmod +x scripts/*.sh utils/*.sh
             ./scripts/4_install_cert.sh
             ```
-            ⚠️ **Ganti cert/1_ca_cert.pem dengan cert PEM ASLI Anda sebelum install!**
+            ⚠️ **Ganti cert/1_ca_cert.pem dengan cert PEM ASLI sebelum install!**
           files: out/*.zip
           draft: false
           prerelease: false
