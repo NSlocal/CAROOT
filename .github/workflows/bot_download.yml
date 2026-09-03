@@ -12,24 +12,24 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: 🤖 Download ZIP Release Terbaru
+      - name: 🤖 Download ZIP Release
         uses: robinraju/release-downloader@v1
         with:
           repository: NSlocal/CAROOT
-          latest: true          # ✅ AMBIL VERSI TERBARU OTOMATIS!
+          latest: true
           filename: 'CAROOT-*.zip'
           out-file-path: 'downloads/'
           extract: false
 
-      - name: 📋 Info File Downloaded
+      - name: 📋 Info File
         run: |
           ls -la downloads/
-          echo "✅ Bot berhasil download ZIP dari NSlocal/CAROOT!"
+          echo "✅ ZIP berhasil di-download!"
 
-      - name: ✅ Verify ZIP Integrity
+      - name: ✅ Verifikasi ZIP
         run: |
           cd downloads/
           for f in *.zip; do
-            echo "Verifikasi: $f"
-            unzip -t "$f" 2>/dev/null && echo "✅ ZIP VALID — $f" || echo "❌ ZIP RUSAK — $f"
+            echo "📦 Cek: $f"
+            unzip -t "$f" 2>/dev/null && echo "✅ ZIP VALID" || echo "❌ ZIP RUSAK"
           done
