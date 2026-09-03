@@ -1,7 +1,7 @@
 name: 🤖 Bot Download CAROOT Release
 on:
   release:
-    types: [published]   # ✅ JALAN OTOMATIS SETELAH RELEASE PUBLISH!
+    types: [published]   # ✅ HANYA JALAN SETELAH RELEASE BENAR-BENAR PUBLISH!
   workflow_dispatch:
 
 jobs:
@@ -30,7 +30,8 @@ jobs:
           if compgen -G "downloads/CAROOT-*.zip" > /dev/null; then
             echo "✅ ✅ ✅ ZIP BERHASIL DI-DOWNLOAD!"
           else
-            echo "❌ ZIP BELUM ADA — Publish Release dulu!"
+            echo "❌ ZIP BELUM ADA — Pastikan Release sudah dipublish di:"
+            echo "👉 https://github.com/NSlocal/CAROOT/releases"
             exit 1
           fi
 
