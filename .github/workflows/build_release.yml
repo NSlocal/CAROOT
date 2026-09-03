@@ -48,7 +48,7 @@ jobs:
           make zip
           ls -la out/
 
-      - name: 📤 Create GitHub Release — LANGSUNG PUBLISH!
+      - name: 📤 Create GitHub Release — PASTI PUBLISH!
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -75,5 +75,6 @@ jobs:
           files: out/*.zip
           draft: false              # ✅ WAJIB false = LANGSUNG PUBLISH!
           prerelease: false         # ✅ BUKAN pre-release
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
